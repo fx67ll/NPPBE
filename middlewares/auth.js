@@ -29,6 +29,6 @@ module.exports = (req, res, next) => {
 		res.send({
 			status: 401,
 			msg: '身份失效，请重新登录！'
-		})
-	}
+		});
+	};
 };
