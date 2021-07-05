@@ -20,22 +20,22 @@ var app = express();
 
 // 解决跨域问题，仅做部署使用，平时开发前端直接nginx代理一下就行了
 var cors = require('cors');
-// app.use(cors({
-// 	// 配置Access-Control-Allow-Origin CORS标头
-// 	// 设置origin为有效来源数组
-// 	origin: ['http://211.149.128.130:83','http://node.fx67ll.com'],
-// 	// 提供状态代码以用于成功请求
-// 	optionsSuccessStatus: 200,
-// 	// 配置Access-Control-Allow-Methods CORS标头
-// 	// 期望以逗号分隔的字符串（例如：'GET，PUT，POST'）或数组
-// 	// 目前只有这四种标头，够用了
-// 	methods: ['GET', 'POST', 'PUT', 'DELETE'],
-// 	// 配置Access-Control-Allow-Headers CORS标头
-// 	// 期望以逗号分隔的字符串（例如：'Content-Type，Authorization'）或数组
-// 	// 如果未指定，则默认为反映在请求的Access-Control-Request-Headers标头中指定的标头
-// 	// 如果你的标头没有以下项，请求不予通过，我设置了自定义的token，所以必须再加个token在数组中
-// 	allowedHeaders: ['Content-Type','Authorization','token']
-// }));
+app.use(cors({
+	// 配置Access-Control-Allow-Origin CORS标头
+	// 设置origin为有效来源数组
+	origin: ['http://211.149.128.130:83','http://node.fx67ll.com'],
+	// 提供状态代码以用于成功请求
+	optionsSuccessStatus: 200,
+	// 配置Access-Control-Allow-Methods CORS标头
+	// 期望以逗号分隔的字符串（例如：'GET，PUT，POST'）或数组
+	// 目前只有这四种标头，够用了
+	methods: ['GET', 'POST', 'PUT', 'DELETE'],
+	// 配置Access-Control-Allow-Headers CORS标头
+	// 期望以逗号分隔的字符串（例如：'Content-Type，Authorization'）或数组
+	// 如果未指定，则默认为反映在请求的Access-Control-Request-Headers标头中指定的标头
+	// 如果你的标头没有以下项，请求不予通过，我设置了自定义的token，所以必须再加个token在数组中
+	allowedHeaders: ['Content-Type','Authorization','token']
+}));
 
 // 设置模板引擎，使用这里代码的时候注意放开上面的引用注释，但是这个引擎目前还不知道有什么用
 // app.set('views', path.join(__dirname, 'views'));
