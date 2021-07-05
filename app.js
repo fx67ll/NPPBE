@@ -20,7 +20,7 @@ var app = express();
 
 // 解决跨域问题，仅做部署使用，平时开发前端直接nginx代理一下就行了
 var cors = require('cors');
-if (process.env.IS_PROD === true) {
+if (process.env.IS_PROD === 'true') {
 	app.use(cors({
 		// 配置Access-Control-Allow-Origin CORS标头
 		// 设置origin为有效来源数组
