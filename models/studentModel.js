@@ -30,6 +30,11 @@ var studentSchema = new Schema({
 		type: String,
 		required: true
 	},
+	// 登录用户
+	loginUserId: {
+		type: String,
+		required: true
+	},
 	// 创建时间
 	createTime: {
 		type: Date,

@@ -11,6 +11,7 @@ router.get('/getStudentList', auth, async (req, res) => {
 		startTime,
 		endTime
 	} = req.query;
+	const loginUserId = req.loginUserId;
 	try {
 		let userData, total;
 		if (startTime.length !== 0 && endTime.length !== 0) {
@@ -18,17 +19,21 @@ router.get('/getStudentList', auth, async (req, res) => {
 				"birth": {
 					"$gte": startTime + "T00:00:00Z",
 					"$lt": endTime + "T00:00:00Z"
-				}
+				},
+				"loginUserId": loginUserId
 			}).skip((Number(pageIndex) - 1) * Number(pageSize)).limit(Number(
 				pageSize));
 			total = await Student.find({
 				"birth": {
 					"$gte": startTime + "T00:00:00Z",
 					"$lt": endTime + "T00:00:00Z"
-				}
+				},
+				"loginUserId": loginUserId
 			}).countDocuments();
 		} else {
-			userData = await Student.find().skip((Number(pageIndex) - 1) * Number(pageSize)).limit(Number(
+			userData = await Student.find({
+				"loginUserId": loginUserId
+			}).skip((Number(pageIndex) - 1) * Number(pageSize)).limit(Number(
 				pageSize));
 			total = await Student.countDocuments();
 		}
@@ -55,7 +60,8 @@ router.post('/createStudent', auth, async (req, res) => {
 		sex: req.body.sex,
 		birth: req.body.birth,
 		phone: req.body.phone,
-		bro: req.body.bro
+		bro: req.body.bro,
+		loginUserId: req.loginUserId
 	})
 	try {
 		const data = await user.save();
@@ -68,7 +74,8 @@ router.post('/createStudent', auth, async (req, res) => {
 				sex: data.sex,
 				birth: data.birth,
 				phone: data.phone,
-				bro: data.bro
+				bro: data.bro,
+				loginUserId: data.loginUserId
 			}
 		})
 	} catch (error) {

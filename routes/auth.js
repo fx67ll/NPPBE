@@ -43,6 +43,7 @@ router.post('/signup',
 			passWord,
 			email,
 			phone,
+			level,
 			createDate,
 			updateDate
 		} = req.body;
@@ -95,6 +96,7 @@ router.post('/signup',
 				passWord,
 				email,
 				phone,
+				level,
 				createDate,
 				updateDate
 			});

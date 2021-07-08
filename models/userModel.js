@@ -22,6 +22,11 @@ const userSchema = new mongoose.Schema({
 		type: String,
 		required: true
 	},
+	// 等级
+	level: {
+		type: Number,
+		required: true
+	},
 	// 注册时间
 	createDate: {
 		type: Date,
