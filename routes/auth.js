@@ -12,13 +12,15 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 // 注册接口
+// 后期要处理下用户级别可以随便传的问题
 router.post('/signup',
 	[
 		check('userName', '用户名格式错误！')
 		.not()
 		.isEmpty(),
 		check('passWord', '密码格式错误！').isLength({
-			min: 6
+			min: 32,
+			max: 32
 		}),
 		check('email', '邮箱格式错误！').isEmail(),
 		check('phone', '手机号格式错误').isMobilePhone()
@@ -117,11 +119,11 @@ router.post('/signup',
 			};
 			// console.log('payload', payload);
 
-			// 签发token
+			// 签发token，注册默认签发一个24小时有效的token，目前的页面逻辑没有用到
 			jwt.sign(
 				payload,
 				'randomString', {
-					// 24小时后过期
+					// 默认24小时后过期
 					expiresIn: 60 * 60 * 24
 				},
 				(err, token) => {
@@ -156,15 +158,16 @@ router.post('/signup',
 // 登录接口
 router.post('/login',
 	// 登录暂时不需要用户名和密码的格式验证吧？
-	// [
-	// 	check('userName', '用户名格式错误！')
-	// 	.not()
-	// 	.isEmpty(),
-	// 	check('passWord', '密码格式错误！').isLength({
-	// 		min: 6
-	// 	})
-	// ],
-	async (req, res) => {
+	[
+		// check('userName', '用户名格式错误！')
+		// .not()
+		// .isEmpty(),
+		// check('passWord', '密码格式错误！').isLength({
+		// 	min: 6
+		// })
+		check('validityTime', '登录有效期不能为空！')
+		.notEmpty()
+	], async (req, res) => {
 		// 登录暂时不需要用户名和密码的格式验证吧？
 		// const errors = validationResult(req);
 		// if (!errors.isEmpty()) {
@@ -182,7 +185,8 @@ router.post('/login',
 
 		const {
 			userName,
-			passWord
+			passWord,
+			validityTime
 		} = req.body;
 
 		try {
@@ -215,6 +219,15 @@ router.post('/login',
 				})
 			};
 
+			// 匹配有效期，必须要是秒数字
+			console.log(validityTime);
+			if (!(new RegExp('^[1-9]\d*|0$').test(validityTime))) {
+				return res.json({
+					status: 400,
+					msg: '登录有效期格式错误！'
+				})
+			};
+
 			// 准备签发参数
 			const payload = {
 				user: {
@@ -228,7 +241,8 @@ router.post('/login',
 				payload,
 				'randomString', {
 					// 24小时后过期
-					expiresIn: 60 * 60 * 24
+					// expiresIn: 60 * 60 * 24
+					expiresIn: validityTime
 				},
 				(err, token) => {
 					if (err) throw err;
