@@ -36,6 +36,10 @@ const userSchema = new mongoose.Schema({
 	updateDate: {
 		type: Date,
 		default: Date.now
+	},
+	// 最后的登录时间
+	lastLoginDate: {
+		type: Date
 	}
 }, {
 	versionKey: false,

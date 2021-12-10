@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const moment = require('moment');
 const User = require('../models/userModel');
 // 格式验证插件
 const {
@@ -203,7 +204,7 @@ router.post('/login',
 					status: 400,
 					msg: '用户不存在！'
 				});
-			};
+			}
 
 			// 匹配密码
 			// console.log('passWord', passWord);
@@ -220,7 +221,7 @@ router.post('/login',
 			};
 
 			// 匹配有效期，必须要是秒数字
-			console.log(validityTime);
+			// console.log('validityTime', validityTime);
 			if (!(new RegExp('^[1-9]\d*|0$').test(validityTime))) {
 				return res.json({
 					status: 400,
@@ -228,34 +229,79 @@ router.post('/login',
 				})
 			};
 
-			// 准备签发参数
-			const payload = {
-				user: {
-					id: user.id
-				}
-			};
-			// console.log('payload', payload);
+			// 查找上一次登录时间信息，并计算时间差
+			let lastLoginDate, nowLoginDate, loginTimeGap;
+			let testPromise = new Promise(function(resolve, reject) {
+				User.findOne({
+					userName: userName
+				}, function(err, doc) {
+					if (err) {
+						// 返回异常
+						reject(err);
+					}
+					if (doc) {
+						// 上次登录时间和当前时间对比，并得出时间差
+						lastLoginDate = doc.lastLoginDate;
+						nowLoginDate = Date.now();
+						loginTimeGap = moment(nowLoginDate).diff(moment(lastLoginDate),
+							'seconds');
 
-			// 签发token
-			jwt.sign(
-				payload,
-				'randomString', {
-					// 24小时后过期
-					// expiresIn: 60 * 60 * 24
-					expiresIn: validityTime
-				},
-				(err, token) => {
-					if (err) throw err;
-					res.status(200).json({
-						status: 0,
-						msg: '登录成功！',
-						data: {
-							userName: user.userName
-						},
-						token: token
-					});
-				}
-			);
+						// console.log(moment(lastLoginDate).format('YYYY-MM-DD HH:mm:ss'));
+						// console.log(moment(nowLoginDate).format('YYYY-MM-DD HH:mm:ss'));
+						// console.log(moment(nowLoginDate).diff(moment(lastLoginDate),
+						// 	'seconds'));
+
+						// 返回给下一步操作
+						resolve(nowLoginDate);
+					}
+				});
+			});
+
+			// 修改最后的登录时间，成功后签发token
+			testPromise.then(function(date) {
+				User.findOneAndUpdate({
+					userName: userName
+				}, {
+					lastLoginDate: nowLoginDate
+				}, function(err, doc) {
+					if (err) {
+						console.log(err);
+					}
+					if (doc) {
+						// console.log(moment(doc.lastLoginDate).format('YYYY-MM-DD HH:mm:ss'));
+
+						// 准备签发参数
+						const payload = {
+							user: {
+								id: user.id
+							}
+						};
+						// console.log('payload', payload);
+
+						// 签发token
+						jwt.sign(
+							payload,
+							'randomString', {
+								// 24小时后过期
+								// expiresIn: 60 * 60 * 24
+								expiresIn: validityTime
+							},
+							(err, token) => {
+								if (err) throw err;
+								res.status(200).json({
+									status: 0,
+									msg: '登录成功！',
+									data: {
+										userName: user.userName,
+										loginTimeGap: loginTimeGap
+									},
+									token: token
+								});
+							}
+						);
+					}
+				});
+			});
 
 		} catch (error) {
 			console.log(error);
