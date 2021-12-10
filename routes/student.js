@@ -17,7 +17,7 @@ router.get('/getStudentList', auth, async (req, res) => {
 		if (startTime.length !== 0 && endTime.length !== 0) {
 			userData = await Student.find({
 				"birth": {
-					"$gte": startTime + "T00:00:00Z",
+					// "$gte": startTime + "T00:00:00Z",
 					"$lt": endTime + "T00:00:00Z"
 				},
 				"loginUserId": loginUserId
@@ -25,7 +25,7 @@ router.get('/getStudentList', auth, async (req, res) => {
 				pageSize));
 			total = await Student.find({
 				"birth": {
-					"$gte": startTime + "T00:00:00Z",
+					// "$gte": startTime + "T00:00:00Z",
 					"$lt": endTime + "T00:00:00Z"
 				},
 				"loginUserId": loginUserId
@@ -35,7 +35,7 @@ router.get('/getStudentList', auth, async (req, res) => {
 				"loginUserId": loginUserId
 			}).skip((Number(pageIndex) - 1) * Number(pageSize)).limit(Number(
 				pageSize));
-			total = await Student.countDocuments();
+			total = await Student.countDocuments({"loginUserId": loginUserId});
 		}
 
 		res.send({
