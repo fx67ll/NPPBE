@@ -7,8 +7,12 @@ Nodejs Project Powered By Express
 =================================
 
 ## 0.1.x.20xxxxxx
-* 新增单点登录的功能（待完成）  
-* 新增短时间多次登录校验的功能（待完成）  
+* 考虑新增短时间多次登录校验的功能  
+* 在github上搜索的 [校验验证码](https://github.com/search?q=node+captcha) 结果  
+* 校验逻辑暂定 [图形验证码插件一](https://github.com/produck/svg-captcha)  
+* 校验逻辑暂定 [图形验证码插件二](https://github.com/trekjs/captcha)  
+* 考虑新增单点登录的功能  
+* 继续考虑添加权限和菜单管理  
 
 ## 0.1.5.20211211
 * 新增登录间隔时间校验，暂时停止推进  
