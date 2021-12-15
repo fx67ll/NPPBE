@@ -39,7 +39,8 @@ const userSchema = new mongoose.Schema({
 	},
 	// 最后的登录时间
 	lastLoginDate: {
-		type: Date
+		type: Date,
+		default: Date.now()
 	}
 }, {
 	versionKey: false,
