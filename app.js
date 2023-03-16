@@ -24,7 +24,7 @@ if (process.env.IS_PROD === 'true') {
 	app.use(cors({
 		// 配置Access-Control-Allow-Origin CORS标头
 		// 设置origin为有效来源数组
-		origin: ['http://211.149.128.130:83', 'http://node.fx67ll.com'],
+		origin: ['https://node.fx67ll.com'],
 		// 提供状态代码以用于成功请求
 		optionsSuccessStatus: 200,
 		// 配置Access-Control-Allow-Methods CORS标头
